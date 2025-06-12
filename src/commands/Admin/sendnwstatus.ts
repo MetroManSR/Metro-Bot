@@ -18,25 +18,25 @@ export class UserCommand extends Command {
 		const lineInforEmbeds = [];
 
 		for (const line in networkStatus) {
-			const key = line as keyof typeof networkStatus;
-			const lineInfo = networkStatus[key];
-			const stationsList = lineInfo.estaciones
+			const lineCode = line as keyof typeof networkStatus;
+			const lineInfo = networkStatus[lineCode];
+			const stationList = lineInfo.estaciones
 				.map((station) => {
-					const transfer = station.combinacion.toLocaleLowerCase() as LineCodes | '';
+					const lineTransferCode = station.combinacion.toLocaleLowerCase() as LineCodes | '';
 
-					if (transfer) {
-						return `${station.nombre.replace(key.toUpperCase(), lineEmojis[key])}↔️${lineEmojis[transfer]}`;
+					if (lineTransferCode) {
+						return `${station.nombre.replace(lineCode.toUpperCase(), lineEmojis[lineCode])}↔️${lineEmojis[lineTransferCode]}`;
 					}
 
-					return `${station.nombre.replace(key.toUpperCase(), lineEmojis[key])}`;
+					return `${station.nombre.replace(lineCode.toUpperCase(), lineEmojis[lineCode])}`;
 				})
 				.join('\n');
 
 			const lineInfoEmbed = new EmbedBuilder()
-				.setTitle(`${lineEmojis[key]} ${lineNames[key]}`)
-				.setColor(lineColors[key])
+				.setTitle(`${lineEmojis[lineCode]} ${lineNames[lineCode]}`)
+				.setColor(lineColors[lineCode])
 				.setDescription(lineInfo.estado)
-				.addFields({ name: '🚉 Estaciones', value: stationsList });
+				.addFields({ name: '🚉 Estaciones', value: stationList });
 
 			lineInforEmbeds.push(lineInfoEmbed);
 		}
