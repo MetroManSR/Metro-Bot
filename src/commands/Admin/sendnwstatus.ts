@@ -2,7 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import { EmbedBuilder, Message } from 'discord.js';
 import { lineColors, lineEmojis, lineNames } from '../../lib/constants';
-import { LineCodes } from '../../lib/metro/types';
+import { LineCode } from '../../lib/metro/types';
 
 @ApplyOptions<Command.Options>({
 	description: 'Envía embeds estado de red'
@@ -18,11 +18,11 @@ export class UserCommand extends Command {
 		const lineInforEmbeds = [];
 
 		for (const line in networkStatus) {
-			const lineCode = line as keyof typeof networkStatus;
+			const lineCode = line as LineCode;
 			const lineInfo = networkStatus[lineCode];
 			const stationList = lineInfo.estaciones
 				.map((station) => {
-					const lineTransferCode = station.combinacion.toLocaleLowerCase() as LineCodes | '';
+					const lineTransferCode = station.combinacion.toLocaleLowerCase() as LineCode | '';
 
 					if (lineTransferCode) {
 						return `${station.nombre.replace(lineCode.toUpperCase(), lineEmojis[lineCode])}↔️${lineEmojis[lineTransferCode]}`;

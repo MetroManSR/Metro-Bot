@@ -2,7 +2,7 @@ interface StationStatus {
 	nombre: string;
 	codigo: string;
 	estado: string;
-	combinacion: LineCodesUpper;
+	combinacion: LineCodeUpper;
 	descripcion: string;
 	descripcion_app: string;
 	mensaje: string;
@@ -15,11 +15,11 @@ interface LineStatus {
 	estaciones: StationStatus[];
 }
 
-type LineCodesLower = 'l1' | 'l2' | 'l3' | 'l4' | 'l4a' | 'l5' | 'l6';
-type LineCodesUpper = 'L1' | 'L2' | 'L3' | 'L4' | 'L4a' | 'L5' | 'L6';
+type LineCodeLower = 'l1' | 'l2' | 'l3' | 'l4' | 'l4a' | 'l5' | 'l6';
+type LineCodeUpper = 'L1' | 'L2' | 'L3' | 'L4' | 'L4a' | 'L5' | 'L6';
 
 type NetworkStatusResponse = {
-	[line in LineCodesLower]: LineStatus;
+	[line in LineCodeLower]: LineStatus;
 };
 
-export { NetworkStatusResponse, LineCodesLower as LineCodes };
+export { NetworkStatusResponse, LineCodeLower as LineCode };
