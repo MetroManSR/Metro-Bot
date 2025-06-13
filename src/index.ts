@@ -3,6 +3,7 @@ import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { IntentsBitField } from 'discord.js';
 import { PrismaClient } from '../generated';
 import { MetroAPI } from './lib/metro/MetroAPI';
+import { TaskStore } from './lib/structures/TaskStore';
 
 const client = new SapphireClient({
 	defaultPrefix: 'm!',
@@ -19,8 +20,9 @@ const client = new SapphireClient({
 	loadMessageCommandListeners: true
 });
 
-client.prisma = new PrismaClient();
 client.metro = new MetroAPI();
+client.prisma = new PrismaClient();
+client.stores.register(new TaskStore());
 
 const main = async () => {
 	try {
@@ -33,6 +35,7 @@ const main = async () => {
 		client.logger.info('[DB] Conexión a la base de datos exitosa!');
 	} catch (error) {
 		client.logger.fatal(error);
+		await client.prisma.$disconnect();
 		await client.destroy();
 		process.exit(-1);
 	}
