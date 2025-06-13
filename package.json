@@ -34,6 +34,7 @@
 	"dependencies": {
 		"@prisma/client": "^6.9.0",
 		"@sapphire/decorators": "^6.2.0",
+		"@sapphire/discord.js-utilities": "^7.3.3",
 		"@sapphire/framework": "^5.3.6",
 		"@sapphire/plugin-logger": "^4.0.2",
 		"@skyra/env-utilities": "^2.0.1",
