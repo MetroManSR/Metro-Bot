@@ -21,6 +21,7 @@ export abstract class Task extends Piece<Task.Options> {
 
 	public override onLoad() {
 		if (this.immediate) this.run();
+		if (!this.enabled) return;
 		setInterval(() => this.run(), this.interval);
 	}
 }
