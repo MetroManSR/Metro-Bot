@@ -8,11 +8,13 @@ generator client {
   output   = "../generated"
 }
 
-model NetworkStatus {
+model MetroNetworkStatus {
   id        Int      @id @default(autoincrement())
-  name      String   @unique
+  info      Json
+  info_hash String
+  overrides Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("network_status")
+  @@map("metro_network_status")
 }
