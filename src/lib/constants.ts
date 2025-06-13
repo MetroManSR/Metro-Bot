@@ -1,11 +1,11 @@
 import { ColorResolvable } from 'discord.js';
 import { join } from 'path';
-import { LineCode } from './metro/types';
+import { lineIds } from './metro/types';
 
 export const rootDir = join(__dirname, '..', '..');
 export const srcDir = join(rootDir, 'src');
 
-export const lineEmojis: Record<LineCode, string> = {
+export const lineEmojis: Record<lineIds, string> = {
 	l1: '<:Linea1:900165458412585000>',
 	l2: '<:Linea2:900165548107784202>',
 	l3: '<:Linea3:900165548707561482>',
@@ -25,7 +25,7 @@ export const lineNames = {
 	l6: 'Línea 6'
 };
 
-export const lineColors: Record<LineCode, ColorResolvable> = {
+export const lineColors: Record<lineIds, ColorResolvable> = {
 	l1: '#ea000a',
 	l2: '#ffaf00',
 	l3: '#67210a',
