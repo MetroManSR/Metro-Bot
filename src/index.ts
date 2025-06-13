@@ -2,8 +2,6 @@ import './lib/setup';
 import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { IntentsBitField } from 'discord.js';
 import { PrismaClient } from '../generated';
-import { MetroAPI } from './lib/metro/MetroAPI';
-import { TaskStore } from './lib/structures/TaskStore';
 
 const client = new SapphireClient({
 	defaultPrefix: 'm!',
@@ -17,12 +15,19 @@ const client = new SapphireClient({
 	logger: {
 		level: LogLevel.Debug
 	},
-	loadMessageCommandListeners: true
+	loadMessageCommandListeners: true,
+	tasks: {
+		bull: {
+			connection: {
+				host: process.env.REDIS_HOST,
+				port: 6379,
+				db: 1
+			}
+		}
+	}
 });
 
-client.metro = new MetroAPI();
 client.prisma = new PrismaClient();
-client.stores.register(new TaskStore());
 
 const main = async () => {
 	try {
@@ -46,6 +51,5 @@ void main();
 declare module 'discord.js' {
 	interface Client {
 		prisma: PrismaClient;
-		metro: MetroAPI;
 	}
 }

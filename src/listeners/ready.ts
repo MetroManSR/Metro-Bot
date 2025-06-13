@@ -36,6 +36,6 @@ ${dev ? `${llc('MetroBot 6.0.0')}\n${blc('<')}${llc('/')}${blc('>')} ${llc('DEVE
 	}
 
 	private styleStore(store: StoreRegistryValue, last: boolean) {
-		return gray(`${last ? '└─' : '├─'} Se cargaron ${this.style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
+		return gray(`${last ? '└─' : '├─'} Loaded ${this.style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
 	}
 }

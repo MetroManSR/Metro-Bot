@@ -1,5 +1,6 @@
 import { ApplicationCommandRegistries, RegisterBehavior } from '@sapphire/framework';
 import '@sapphire/plugin-logger/register';
+import '@sapphire/plugin-scheduled-tasks/register';
 import { setup, type ArrayString } from '@skyra/env-utilities';
 import * as colorette from 'colorette';
 import { join } from 'path';
