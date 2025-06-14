@@ -11,6 +11,7 @@ export async function setNetworkUpdatesChannel(interaction: ChannelSelectMenuInt
 		return;
 	}
 
+	// Enviar embeds de estado
 	const message = await channel.send('wooooo embeds');
 
 	await container.prisma.metroStatusMessage.upsert({
