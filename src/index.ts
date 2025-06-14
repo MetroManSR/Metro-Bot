@@ -1,7 +1,8 @@
 import './lib/setup';
-import { LogLevel, SapphireClient } from '@sapphire/framework';
+import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { IntentsBitField } from 'discord.js';
 import { PrismaClient } from '../generated';
+import { MetroAPI } from './lib/MetroAPI/MetroAPI';
 
 const client = new SapphireClient({
 	defaultPrefix: 'm!',
@@ -28,6 +29,10 @@ const client = new SapphireClient({
 });
 
 client.prisma = new PrismaClient();
+container.prisma = client.prisma;
+
+client.metro = new MetroAPI();
+container.metro = client.metro;
 
 const main = async () => {
 	try {
@@ -51,5 +56,13 @@ void main();
 declare module 'discord.js' {
 	interface Client {
 		prisma: PrismaClient;
+		metro: MetroAPI;
+	}
+}
+
+declare module '@sapphire/pieces' {
+	interface Container {
+		prisma: PrismaClient;
+		metro: MetroAPI;
 	}
 }

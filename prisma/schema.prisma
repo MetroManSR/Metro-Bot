@@ -8,13 +8,14 @@ generator client {
   output   = "../generated"
 }
 
-model MetroNetworkStatus {
-  id        Int      @id @default(autoincrement())
-  info      Json
-  info_hash String
-  overrides Json?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model MetroStatusMessage {
+  guild_id      String   @id
+  channel_id    String   @unique
+  message_id    String   @unique
+  overrides     Json?
+  api_data_hash String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@map("metro_network_status")
+  @@map("metro_status_messages")
 }
