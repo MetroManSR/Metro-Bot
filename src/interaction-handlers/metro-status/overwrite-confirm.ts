@@ -1,7 +1,8 @@
+import { ErrorEmbed } from '#templates/embeds/info/ErrorEmbed';
+import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
 import { ApplyOptions } from '@sapphire/decorators';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ButtonInteraction } from 'discord.js';
-import { setNetworkUpdatesChannel } from '../../helpers/setNetworkUpdatesChannel';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.Button
@@ -18,6 +19,27 @@ export class ButtonHandler extends InteractionHandler {
 	}
 
 	public async run(interaction: ButtonInteraction<'cached'>, channelId: string) {
-		await setNetworkUpdatesChannel(interaction, channelId);
+		const updatesChannel = interaction.guild.channels.cache.get(channelId);
+
+		if (!updatesChannel) {
+			interaction.update({ embeds: [new ErrorEmbed(`No se pudo encontrar el canal con la id ${channelId}`)], components: [] });
+			return;
+		}
+
+		if (!updatesChannel.isSendable()) {
+			interaction.update({ embeds: [new ErrorEmbed(`No se puedo envíar el mensaje al canal <#${channelId}>`)] });
+			return;
+		}
+
+		const updatesMessage = await updatesChannel.send('TEST');
+
+		await this.container.prisma.metroStatusMessage.create({
+			data: { guildId: interaction.guildId, channelId: channelId, messageId: updatesMessage.id }
+		});
+
+		interaction.update({
+			embeds: [new SimpleEmbed(`Se estableció <#${channelId}> como canal de actualizaciones`, '✅ Configuración guardada')],
+			components: []
+		});
 	}
 }

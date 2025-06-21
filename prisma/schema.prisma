@@ -9,13 +9,9 @@ generator client {
 }
 
 model MetroStatusMessage {
-  guild_id      String   @id
-  channel_id    String   @unique
-  message_id    String   @unique
-  overrides     Json?
-  api_data_hash String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  guildId   String @id
+  channelId String @unique
+  messageId String @unique
 
   @@map("metro_status_messages")
 }

@@ -1,9 +1,17 @@
 {
 	"extends": ["@sapphire/ts-config", "@sapphire/ts-config/extra-strict", "@sapphire/ts-config/decorators"],
 	"compilerOptions": {
+		"baseUrl": "src",
 		"rootDir": "src",
 		"outDir": "dist",
 		"tsBuildInfoFile": "dist/.tsbuildinfo",
+		"paths": {
+			"#core/*": ["lib/core/*"],
+			"#utils/*": ["lib/utils/*"],
+			"#types/*": ["types/*"],
+			"#metro-api/*": ["lib/metro-api/*"],
+			"#templates/*": ["templates/*"]
+		},
 		"skipLibCheck": true
 	},
 	"include": ["src"]

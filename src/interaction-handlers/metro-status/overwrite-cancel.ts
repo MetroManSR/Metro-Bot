@@ -1,3 +1,4 @@
+import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
 import { ApplyOptions } from '@sapphire/decorators';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ButtonInteraction } from 'discord.js';
@@ -12,7 +13,7 @@ export class ButtonHandler extends InteractionHandler {
 		return this.none();
 	}
 
-	public async run(_interaction: ButtonInteraction<'cached'>) {
-		console.log('overwrite-cancel');
+	public async run(interaction: ButtonInteraction<'cached'>) {
+		interaction.update({ embeds: [new SimpleEmbed('No se realizaron cambios', '⚙️ Canal de Actualizaciones (Metro)')], components: [] });
 	}
 }

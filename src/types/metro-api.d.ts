@@ -1,11 +1,11 @@
-export type lineName = 'l1' | 'l2' | 'l3' | 'l4' | 'l4a' | 'l5' | 'l6';
-export type lineNameUpper = 'L1' | 'L2' | 'L3' | 'L4' | 'L4a' | 'L5' | 'L6';
+export type lineId = 'l1' | 'l2' | 'l3' | 'l4' | 'l4a' | 'l5' | 'l6';
+export type lineIdUpper = 'L1' | 'L2' | 'L3' | 'L4' | 'L4a' | 'L5' | 'L6';
 
 export interface RawStationInfo {
 	nombre: string;
 	codigo: string;
 	estado: string;
-	combinacion: lineNameUpper | '';
+	combinacion: lineIdUpper | '';
 	descripcion: string;
 	descripcion_app: string;
 	mensaje?: string;
@@ -18,8 +18,8 @@ export interface RawLineInfo {
 	estaciones: RawStationInfo[];
 }
 
-export interface ParsedMetroLine {
-	id: string;
+export interface MetroLine {
+	id: lineId;
 	status: string;
 	message: string;
 	appMessage: string;
@@ -27,5 +27,5 @@ export interface ParsedMetroLine {
 }
 
 export type RawNetworkInfo = {
-	[line in lineName]: RawLineInfo;
+	[line in lineId]: RawLineInfo;
 };

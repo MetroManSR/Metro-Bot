@@ -1,3 +1,5 @@
+import { lineId } from '#types/metro-api';
+import { HexColorString } from 'discord.js';
 import { join } from 'path';
 
 export const rootDir = join(__dirname, '..', '..');
@@ -23,7 +25,7 @@ export const lineNames = {
 	l6: 'Línea 6'
 };
 
-export const lineColors = {
+export const lineColors: Record<lineId, HexColorString> = {
 	l1: '#ea000a',
 	l2: '#ffaf00',
 	l3: '#67210a',

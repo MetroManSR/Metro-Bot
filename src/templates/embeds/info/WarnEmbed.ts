@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 
 export class WarnEmbed extends EmbedBuilder {
-	public constructor(description: string) {
+	public constructor(description: string, title?: string) {
 		super();
 
 		super //
-			.setTitle('⚠️ Advertencia')
+			.setTitle(title ?? '⚠️ Advertencia')
 			.setDescription(description)
 			.setColor('Yellow');
 	}

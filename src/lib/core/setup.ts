@@ -1,12 +1,13 @@
-import { ApplicationCommandRegistries, RegisterBehavior } from '@sapphire/framework';
-import '@sapphire/plugin-logger/register';
-import '@sapphire/plugin-scheduled-tasks/register';
-import '@sapphire/plugin-subcommands/register'
-import { setup, type ArrayString } from '@skyra/env-utilities';
-import * as colorette from 'colorette';
 import { join } from 'path';
 import { inspect } from 'util';
 import { rootDir } from './constants';
+import * as colorette from 'colorette';
+import '@sapphire/plugin-logger/register';
+import '@sapphire/plugin-subcommands/register';
+import '@sapphire/plugin-scheduled-tasks/register';
+import { setup, type ArrayString } from '@skyra/env-utilities';
+
+import { ApplicationCommandRegistries, RegisterBehavior } from '@sapphire/framework';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
 
