@@ -7,3 +7,4 @@ generated/
 migrations/
 refs/
 docker/
+tests/

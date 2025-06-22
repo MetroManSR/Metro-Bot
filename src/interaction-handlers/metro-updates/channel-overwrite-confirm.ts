@@ -33,6 +33,7 @@ export class ButtonHandler extends InteractionHandler {
 
 		const updatesMessage = await updatesChannel.send({ content: 'TEST' });
 
+		// Sobreescribir el canal que se encuentra en la base de datos por el nuevo
 		await this.container.prisma.metroStatusMessage.update({
 			where: { guildId: interaction.guildId },
 			data: { channelId: updatesChannel.id, messageId: updatesMessage.id }

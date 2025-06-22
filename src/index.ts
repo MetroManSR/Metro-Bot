@@ -2,7 +2,8 @@ import '#core/setup';
 import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { IntentsBitField } from 'discord.js';
 import { PrismaClient } from '../generated';
-import { MetroAPI } from '#metro-api/MetroAPI';
+import { MetroAPI } from 'lib/metro/api/MetroAPI';
+import { getLineStatusEmbeds } from '#utils/metro/getLineStatusEmbeds';
 
 const client = new SapphireClient({
 	defaultPrefix: 'm!',
@@ -17,6 +18,7 @@ const client = new SapphireClient({
 		level: LogLevel.Debug
 	},
 	loadMessageCommandListeners: true,
+	// Configuración de BullMQ (nescesario para scheduled-tasks)
 	tasks: {
 		bull: {
 			connection: {
@@ -28,9 +30,11 @@ const client = new SapphireClient({
 	}
 });
 
+// Instanciar prisma para conexión a base de datos y agregar al container de sapphire para uso en pieces
 client.prisma = new PrismaClient();
 container.prisma = client.prisma;
 
+// Instanciar el wrapper de la API del Metro de Santiago y agregar al container de sapphire para uso en pieces
 client.metro = new MetroAPI();
 container.metro = client.metro;
 
@@ -43,6 +47,7 @@ const main = async () => {
 		client.logger.info('[DB] Conectando a la base de datos...');
 		await client.prisma.$connect();
 		client.logger.info('[DB] Conexión a la base de datos exitosa!');
+		getLineStatusEmbeds();
 	} catch (error) {
 		client.logger.fatal(error);
 		await client.prisma.$disconnect();
@@ -53,6 +58,7 @@ const main = async () => {
 
 main();
 
+// Agregar propiedades a discord.js y @sapphire/pieces para que typescript no grite
 declare module 'discord.js' {
 	interface Client {
 		prisma: PrismaClient;

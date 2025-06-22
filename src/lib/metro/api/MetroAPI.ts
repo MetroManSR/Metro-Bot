@@ -1,7 +1,14 @@
 import axios from 'axios';
 import { RawNetworkInfo, NetworkInfo, lineId, RawStationInfo, StationInfo } from './types';
 
+/**
+ * Clase principal para interactuar con las APIs del Metro de Santiago
+ */
 export class MetroAPI {
+	/**
+	 * Obtiene el estado general de la red del Metro de Santiago
+	 * @async
+	 */
 	public async getNetworkInfo() {
 		const rawData: RawNetworkInfo = await this.fetchRawNetworkData();
 		const result = {} as NetworkInfo;

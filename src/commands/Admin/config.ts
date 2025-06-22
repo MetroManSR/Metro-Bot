@@ -23,8 +23,8 @@ export class UserCommand extends Subcommand {
 
 		const channelSelectionRow = new ActionRowBuilder<ChannelSelectMenuBuilder>() //
 			.addComponents(
-				new ChannelSelectMenuBuilder() //
-					.setCustomId('metro-updates:channel-select')
+				new ChannelSelectMenuBuilder()
+					.setCustomId('metro-updates:channel-select') // interaction-handlers/metro-updates/channel-select.ts
 					.setPlaceholder('Selecciona un canal de la lista')
 					.addChannelTypes(ChannelType.GuildText)
 			);

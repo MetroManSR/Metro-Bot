@@ -17,16 +17,18 @@ export class MenuHandler extends InteractionHandler {
 
 	public async run(interaction: ChannelSelectMenuInteraction<'cached'>) {
 		const channelId = interaction.values[0];
+
+		// Revisa la existencia de un canal de actualizaciones ya establecido
 		const existingUpdateMessage = await this.container.prisma.metroStatusMessage.findUnique({ where: { guildId: interaction.guildId } });
 
 		if (existingUpdateMessage) {
 			const confirmRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder() //
-					.setCustomId(`metro-updates:channel-overwrite-confirm:${channelId}`)
+					.setCustomId(`metro-updates:channel-overwrite-confirm:${channelId}`) // interaction-handlers/metro-updates/channel-overwrite-confirm.ts
 					.setLabel('Sobreescribir')
 					.setStyle(ButtonStyle.Danger),
 				new ButtonBuilder() //
-					.setCustomId('metro-updates:channel-overwrite-cancel')
+					.setCustomId('metro-updates:channel-overwrite-cancel') // interaction-handlers/metro-updates/channel-overwrite-cancel.ts
 					.setLabel('Cancelar')
 					.setStyle(ButtonStyle.Primary)
 			);
@@ -58,6 +60,7 @@ export class MenuHandler extends InteractionHandler {
 
 		const updatesMessage = await updatesChannel.send({ content: 'TEST' });
 
+		// Guardar el canal de actualizaciones en la base de datos
 		await this.container.prisma.metroStatusMessage.create({
 			data: { guildId: interaction.guildId, channelId: channelId, messageId: updatesMessage.id }
 		});
