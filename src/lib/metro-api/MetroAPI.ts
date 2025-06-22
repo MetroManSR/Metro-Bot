@@ -1,27 +1,37 @@
 import axios from 'axios';
-import { sha256hash } from '#utils/string/sha256hash';
-import { lineId, MetroLine, RawNetworkInfo } from '#types/metro-api';
+import { RawNetworkInfo, NetworkInfo, lineId, RawStationInfo, StationInfo } from './types';
 
 export class MetroAPI {
-	private async fetchRawNetworkData(): Promise<RawNetworkInfo> {
-		const { data } = await axios.get<RawNetworkInfo>('https://www.metro.cl/api/estadoRedDetalle.php');
+	public async getNetworkInfo() {
+		const rawData: RawNetworkInfo = await this.fetchRawNetworkData();
+		const result = {} as NetworkInfo;
+
+		for (const [line, lineInfo] of Object.entries(rawData)) {
+			result[line as lineId] = {
+				statusCode: lineInfo.estado,
+				messages: {
+					primary: lineInfo.mensaje_app,
+					secondary: lineInfo.mensaje || null
+				},
+				stations: this.normalizeRawStations(lineInfo.estaciones)
+			};
+		}
+
+		return result;
+	}
+
+	private async fetchRawNetworkData() {
+		const { data } = await axios.get('https://www.metro.cl/api/estadoRedDetalle.php');
 		return data;
 	}
 
-	public async getNetworkStatusInfo(): Promise<MetroLine[]> {
-		const data = await this.fetchRawNetworkData();
-		return this.formatNetworkInfo(data);
-	}
-
-	public async getNetworkStatusHash(): Promise<string> {
-		const data = await this.fetchRawNetworkData();
-		return sha256hash(JSON.stringify(data));
-	}
-
-	private formatNetworkInfo(data: RawNetworkInfo): MetroLine[] {
-		return Object.entries(data).map(([_, info]) => {
-			const id = _ as lineId;
-			return { id, status: info.estado, message: info.mensaje, appMessage: info.mensaje_app, stations: info.estaciones };
-		});
+	private normalizeRawStations(stations: RawStationInfo[]): StationInfo[] {
+		return stations.map((station) => ({
+			code: station.codigo,
+			statusCode: station.estado,
+			name: station.nombre,
+			transfer: station.combinacion || null,
+			messages: { primary: station.descripcion, secondary: station.descripcion_app, tertiary: station.mensaje || null }
+		}));
 	}
 }
