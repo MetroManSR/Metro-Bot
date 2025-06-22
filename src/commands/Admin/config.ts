@@ -10,13 +10,13 @@ import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
 	subcommands: [
 		{
 			type: 'group',
-			name: 'metro',
-			entries: [{ name: 'updates', messageRun: 'updates' }]
+			name: 'channel',
+			entries: [{ name: 'metroupdates', messageRun: 'metroupdates' }]
 		}
 	]
 })
 export class UserCommand extends Subcommand {
-	public async updates(message: Message) {
+	public async metroupdates(message: Message) {
 		if (!message.channel.isSendable()) {
 			return;
 		}
@@ -24,7 +24,7 @@ export class UserCommand extends Subcommand {
 		const channelSelectionRow = new ActionRowBuilder<ChannelSelectMenuBuilder>() //
 			.addComponents(
 				new ChannelSelectMenuBuilder() //
-					.setCustomId('metro-status:channel-select')
+					.setCustomId('metro-updates:channel-select')
 					.setPlaceholder('Selecciona un canal de la lista')
 					.addChannelTypes(ChannelType.GuildText)
 			);

@@ -51,7 +51,7 @@ const main = async () => {
 	}
 };
 
-void main();
+main();
 
 declare module 'discord.js' {
 	interface Client {

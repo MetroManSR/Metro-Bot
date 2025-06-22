@@ -10,7 +10,7 @@ import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
 })
 export class MenuHandler extends InteractionHandler {
 	public override async parse(interaction: ChannelSelectMenuInteraction<'cached'>) {
-		if (interaction.customId === `metro-status:channel-select`) return this.some();
+		if (interaction.customId === `metro-updates:channel-select`) return this.some();
 
 		return this.none();
 	}
@@ -22,11 +22,11 @@ export class MenuHandler extends InteractionHandler {
 		if (existingUpdateMessage) {
 			const confirmRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder() //
-					.setCustomId(`metro-status:overwrite-confirm:${channelId}`)
+					.setCustomId(`metro-updates:channel-overwrite-confirm:${channelId}`)
 					.setLabel('Sobreescribir')
 					.setStyle(ButtonStyle.Danger),
 				new ButtonBuilder() //
-					.setCustomId('metro-status:overwrite-cancel')
+					.setCustomId('metro-updates:channel-overwrite-cancel')
 					.setLabel('Cancelar')
 					.setStyle(ButtonStyle.Primary)
 			);
@@ -56,7 +56,7 @@ export class MenuHandler extends InteractionHandler {
 			return;
 		}
 
-		const updatesMessage = await updatesChannel.send('TEST');
+		const updatesMessage = await updatesChannel.send({ content: 'TEST' });
 
 		await this.container.prisma.metroStatusMessage.create({
 			data: { guildId: interaction.guildId, channelId: channelId, messageId: updatesMessage.id }

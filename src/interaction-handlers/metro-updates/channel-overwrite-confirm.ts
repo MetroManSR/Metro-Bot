@@ -9,7 +9,7 @@ import { ButtonInteraction } from 'discord.js';
 })
 export class ButtonHandler extends InteractionHandler {
 	public override async parse(interaction: ButtonInteraction<'cached'>) {
-		if (interaction.customId.startsWith(`metro-status:${this.name}`)) {
+		if (interaction.customId.startsWith(`metro-updates:${this.name}`)) {
 			const [_, __, channelId] = interaction.customId.split(':');
 
 			return this.some(channelId);
@@ -31,10 +31,11 @@ export class ButtonHandler extends InteractionHandler {
 			return;
 		}
 
-		const updatesMessage = await updatesChannel.send('TEST');
+		const updatesMessage = await updatesChannel.send({ content: 'TEST' });
 
-		await this.container.prisma.metroStatusMessage.create({
-			data: { guildId: interaction.guildId, channelId: channelId, messageId: updatesMessage.id }
+		await this.container.prisma.metroStatusMessage.update({
+			where: { guildId: interaction.guildId },
+			data: { channelId: updatesChannel.id, messageId: updatesMessage.id }
 		});
 
 		interaction.update({

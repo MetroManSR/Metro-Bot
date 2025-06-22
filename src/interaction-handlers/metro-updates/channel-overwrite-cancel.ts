@@ -8,7 +8,7 @@ import { ButtonInteraction } from 'discord.js';
 })
 export class ButtonHandler extends InteractionHandler {
 	public override async parse(interaction: ButtonInteraction<'cached'>) {
-		if (interaction.customId === `metro-status:${this.name}`) return this.some();
+		if (interaction.customId === `metro-updates:${this.name}`) return this.some();
 
 		return this.none();
 	}
