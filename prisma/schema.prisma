@@ -8,24 +8,34 @@ generator client {
   output   = "../generated"
 }
 
+enum LineId {
+  l1
+  l2
+  l3
+  l4
+  l4a
+  l5
+  l6
+}
+
 model MetroStatusMessage {
-  messageId String @id
-  lineId    String
-  infoHash  String
+  message_id String @id
+  line_id    LineId
+  info_hash  String
 
   // Relación a metro_status_updaters
-  metroStatusUpdater        MetroStatusUpdater @relation(fields: [metroStatusUpdaterGuildId], references: [guildId])
-  metroStatusUpdaterGuildId String
+  metro_status_updater    MetroStatusUpdater @relation(fields: [metro_status_updater_guild_id], references: [guild_id])
+  metro_status_updater_guild_id String
 
   @@map("metro_status_messages")
 }
 
 model MetroStatusUpdater {
-  guildId   String @id
-  channelId String @unique
+  guild_id   String @id
+  channel_id String @unique
 
   // Relación a metro_status_messages
-  messages MetroStatusMessage[]
+  metroStatusMessages MetroStatusMessage[]
 
   @@map("metro_status_updaters")
 }
