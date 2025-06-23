@@ -9,9 +9,23 @@ generator client {
 }
 
 model MetroStatusMessage {
-  guildId   String @id
-  channelId String @unique
-  messageId String @unique
+  messageId String @id
+  lineId    String
+  infoHash  String
+
+  // Relación a metro_status_updaters
+  metroStatusUpdater        MetroStatusUpdater @relation(fields: [metroStatusUpdaterGuildId], references: [guildId])
+  metroStatusUpdaterGuildId String
 
   @@map("metro_status_messages")
+}
+
+model MetroStatusUpdater {
+  guildId   String @id
+  channelId String @unique
+
+  // Relación a metro_status_messages
+  messages MetroStatusMessage[]
+
+  @@map("metro_status_updaters")
 }
