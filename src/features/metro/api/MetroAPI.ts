@@ -14,7 +14,10 @@ export class MetroAPI {
 		const result = {} as NetworkInfo;
 
 		for (const [line, lineInfo] of Object.entries(rawData)) {
-			result[line as LineId] = {
+			const key = line as LineId;
+
+			result[key] = {
+				id: key,
 				statusCode: this.isOperating() ? lineInfo.estado : '0',
 				messages: {
 					primary: lineInfo.mensaje_app,

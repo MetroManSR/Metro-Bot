@@ -36,6 +36,7 @@ export interface StationInfo {
 }
 
 export interface LineInfo {
+	id: LineId;
 	statusCode: StatusCode;
 	messages: {
 		primary: string;

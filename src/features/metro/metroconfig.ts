@@ -1,5 +1,5 @@
 import { ColorResolvable } from 'discord.js';
-import { LineId } from 'lib/metro/api/types';
+import { LineId } from '#metro/api/types';
 
 export const lineIcons: Record<LineId, string> = {
 	l1: '<:l1:1386445105455566918>',
