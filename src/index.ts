@@ -3,7 +3,6 @@ import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { IntentsBitField } from 'discord.js';
 import { PrismaClient } from '../generated';
 import { MetroAPI } from 'lib/metro/api/MetroAPI';
-import { getLineStatusEmbeds } from '#utils/metro/getLineStatusEmbeds';
 
 const client = new SapphireClient({
 	defaultPrefix: 'm!',
@@ -47,7 +46,6 @@ const main = async () => {
 		client.logger.info('[DB] Conectando a la base de datos...');
 		await client.prisma.$connect();
 		client.logger.info('[DB] Conexión a la base de datos exitosa!');
-		getLineStatusEmbeds();
 	} catch (error) {
 		client.logger.fatal(error);
 		await client.prisma.$disconnect();

@@ -1,5 +1,6 @@
 import { ErrorEmbed } from '#templates/embeds/info/ErrorEmbed';
 import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
+import { getLineStatusEmbeds } from '#utils/metro/getLineStatusEmbeds';
 import { ApplyOptions } from '@sapphire/decorators';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ButtonInteraction } from 'discord.js';
@@ -31,7 +32,7 @@ export class ButtonHandler extends InteractionHandler {
 			return;
 		}
 
-		const updatesMessage = await updatesChannel.send({ content: 'TEST' });
+		const updatesMessage = await updatesChannel.send({ embeds: await getLineStatusEmbeds() });
 
 		// Sobreescribir el canal que se encuentra en la base de datos por el nuevo
 		await this.container.prisma.metroStatusMessage.update({

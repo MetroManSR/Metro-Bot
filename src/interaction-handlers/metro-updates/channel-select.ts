@@ -4,6 +4,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuInteract
 import { WarnEmbed } from '#templates/embeds/info/WarnEmbed';
 import { ErrorEmbed } from '#templates/embeds/info/ErrorEmbed';
 import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
+import { getLineStatusEmbeds } from '#utils/metro/getLineStatusEmbeds';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.SelectMenu
@@ -58,7 +59,7 @@ export class MenuHandler extends InteractionHandler {
 			return;
 		}
 
-		const updatesMessage = await updatesChannel.send({ content: 'TEST' });
+		const updatesMessage = await updatesChannel.send({ embeds: await getLineStatusEmbeds() });
 
 		// Guardar el canal de actualizaciones en la base de datos
 		await this.container.prisma.metroStatusMessage.create({

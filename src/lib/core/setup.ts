@@ -13,7 +13,7 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior
 
 setup({ path: join(rootDir, '.env') });
 
-inspect.defaultOptions.depth = 1;
+inspect.defaultOptions.depth = 10;
 
 colorette.createColors({ useColor: true });
 
