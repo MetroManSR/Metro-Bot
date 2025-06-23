@@ -6,10 +6,9 @@
 		"outDir": "dist",
 		"tsBuildInfoFile": "dist/.tsbuildinfo",
 		"paths": {
-			"#core/*": ["lib/core/*"],
-			"#utils/*": ["lib/utils/*"],
-			"#types/*": ["types/*"],
-			"#metro-api/*": ["lib/metro-api/*"],
+			"#lib/*": ["lib/*"],
+			"#utils/*": ["utils/*"],
+			"#metro/*": ["features/metro/*"],
 			"#templates/*": ["templates/*"]
 		},
 		"skipLibCheck": true
