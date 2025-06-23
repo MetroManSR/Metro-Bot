@@ -1,7 +1,7 @@
 import { ColorResolvable } from 'discord.js';
-import { lineId } from 'lib/metro/api/types';
+import { LineId } from 'lib/metro/api/types';
 
-export const lineIcons: Record<lineId, string> = {
+export const lineIcons: Record<LineId, string> = {
 	l1: '<:l1:1386445105455566918>',
 	l2: '<:l2:1386445134367035485>',
 	l3: '<:l3:1386445150246670478>',
@@ -11,7 +11,7 @@ export const lineIcons: Record<lineId, string> = {
 	l6: '<:l6:1386445209130242289>'
 };
 
-export const lineNames: Record<lineId, string> = {
+export const lineNames: Record<LineId, string> = {
 	l1: 'Línea 1',
 	l2: 'Línea 2',
 	l3: 'Línea 3',
@@ -21,7 +21,7 @@ export const lineNames: Record<lineId, string> = {
 	l6: 'Línea 6'
 };
 
-export const lineColors: Record<lineId, ColorResolvable> = {
+export const lineColors: Record<LineId, ColorResolvable> = {
 	l1: '#ea000a',
 	l2: '#ffaf00',
 	l3: '#67210a',
@@ -29,4 +29,22 @@ export const lineColors: Record<lineId, ColorResolvable> = {
 	l4a: '#0079c1',
 	l5: '#00ab65',
 	l6: '#953994'
+};
+
+export const lineStatusMappings = {
+	'0': '🌙 Cierre por horario',
+	'1': '🟩 Operativa',
+	'2': '🟥 Cerrada',
+	'3': '🟨 Cierre parcial',
+	'4': '⏲️ Demoras en frecuencia',
+	'5': '➕ Ruta extendida'
+};
+
+export const stationStatusMappings = {
+	'0': '🌙', // Cierre por horario
+	'1': '<:operativa:1386520320952897536>', // Estación operativa
+	'2': '🟥', // Estación cerrada
+	'3': '', // ???
+	'4': '', // ???
+	'5': '' // ???
 };

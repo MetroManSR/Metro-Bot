@@ -1,9 +1,11 @@
-export type lineId = 'l1' | 'l2' | 'l3' | 'l4' | 'l4a' | 'l5' | 'l6';
+export type LineId = 'l1' | 'l2' | 'l3' | 'l4' | 'l4a' | 'l5' | 'l6';
+type RawStatusCode = '1' | '2' | '3' | '4';
+type StatusCode = '0' | '1' | '2' | '3' | '4' | '5';
 
 export interface RawStationInfo {
 	nombre: string;
 	codigo: string;
-	estado: string;
+	estado: RawStatusCode;
 	combinacion: string;
 	descripcion: string;
 	descripcion_app: string;
@@ -11,19 +13,19 @@ export interface RawStationInfo {
 }
 
 export interface RawLineInfo {
-	estado: string;
+	estado: RawStatusCode;
 	mensaje: string;
 	mensaje_app: string;
 	estaciones: RawStationInfo[];
 }
 
 export type RawNetworkInfo = {
-	[key in lineId]: RawLineInfo;
+	[key in LineId]: RawLineInfo;
 };
 
 export interface StationInfo {
 	code: string;
-	statusCode: string;
+	statusCode: StatusCode;
 	name: string;
 	transfer: string | null;
 	messages: {
@@ -34,7 +36,7 @@ export interface StationInfo {
 }
 
 export interface LineInfo {
-	statusCode: string;
+	statusCode: StatusCode;
 	messages: {
 		primary: string;
 		secondary: string | null;
@@ -43,5 +45,5 @@ export interface LineInfo {
 }
 
 export type NetworkInfo = {
-	[key in lineId]: LineInfo;
+	[key in LineId]: LineInfo;
 };

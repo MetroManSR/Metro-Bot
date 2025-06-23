@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RawNetworkInfo, NetworkInfo, lineId, RawStationInfo, StationInfo } from './types';
+import { RawNetworkInfo, NetworkInfo, LineId, RawStationInfo, StationInfo } from './types';
 
 /**
  * Clase principal para interactuar con las APIs del Metro de Santiago
@@ -14,8 +14,8 @@ export class MetroAPI {
 		const result = {} as NetworkInfo;
 
 		for (const [line, lineInfo] of Object.entries(rawData)) {
-			result[line as lineId] = {
-				statusCode: lineInfo.estado,
+			result[line as LineId] = {
+				statusCode: this.isOperating() ? lineInfo.estado : '0',
 				messages: {
 					primary: lineInfo.mensaje_app,
 					secondary: lineInfo.mensaje || null
@@ -35,10 +35,43 @@ export class MetroAPI {
 	private normalizeRawStations(stations: RawStationInfo[]): StationInfo[] {
 		return stations.map((station) => ({
 			code: station.codigo,
-			statusCode: station.estado,
+			statusCode: this.isOperating() ? station.estado : '0',
 			name: station.nombre,
 			transfer: station.combinacion || null,
 			messages: { primary: station.descripcion, secondary: station.descripcion_app, tertiary: station.mensaje || null }
 		}));
+	}
+
+	private isOperating() {
+		const now = new Date();
+		const day = now.getDay(); // 0 = Domingo, 6 = Sábado
+		const minutes = now.getHours() * 60 + now.getMinutes();
+
+		let start: number, end: number;
+
+		switch (day) {
+			case 0: {
+				// Domingo
+				start = 7 * 60 + 30; // 7:30
+				end = 23 * 60; // 23:00
+				break;
+			}
+
+			case 6: {
+				// Sábado
+				start = 6 * 60 + 30; // 6:30
+				end = 23 * 60; // 23:00
+				break;
+			}
+
+			default: {
+				// Lunes a viernes
+				start = 6 * 60; // 6:00
+				end = 23 * 60; // 23:00
+			}
+		}
+
+		// start ≤ ahora ≤ end
+		return minutes >= start && minutes <= end;
 	}
 }
