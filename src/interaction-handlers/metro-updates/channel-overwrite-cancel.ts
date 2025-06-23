@@ -1,4 +1,4 @@
-import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
+import { SimpleEmbed } from '#templates/SimpleEmbed';
 import { ApplyOptions } from '@sapphire/decorators';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ButtonInteraction } from 'discord.js';

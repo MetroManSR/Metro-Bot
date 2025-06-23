@@ -1,7 +1,7 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, Message } from 'discord.js';
-import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
+import { SimpleEmbed } from '#templates/SimpleEmbed';
 
 @ApplyOptions<Subcommand.Options>({
 	description: 'Comandos de configuracion para MetroBot',

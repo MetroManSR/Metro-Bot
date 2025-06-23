@@ -1,8 +1,8 @@
-import '#core/setup';
+import 'lib/setup';
 import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { IntentsBitField } from 'discord.js';
 import { PrismaClient } from '../generated';
-import { MetroAPI } from 'lib/metro/api/MetroAPI';
+import { MetroAPI } from '#metro/api/MetroAPI';
 
 const client = new SapphireClient({
 	defaultPrefix: 'm!',

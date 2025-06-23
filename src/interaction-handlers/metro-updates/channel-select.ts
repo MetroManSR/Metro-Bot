@@ -1,10 +1,13 @@
 import { ApplyOptions } from '@sapphire/decorators';
+import { WarnEmbed } from '#templates/WarnEmbed';
+import { ErrorEmbed } from '#templates/ErrorEmbed';
+import { SimpleEmbed } from '#templates/SimpleEmbed';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuInteraction } from 'discord.js';
-import { WarnEmbed } from '#templates/embeds/info/WarnEmbed';
-import { ErrorEmbed } from '#templates/embeds/info/ErrorEmbed';
-import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
-import { getLineStatusEmbeds } from '#utils/metro/getLineStatusEmbeds';
+import { createMetroStatusUpdater } from '#metro/helpers/createMetroStatusUpdater';
+import { getMetroLineStatusEmbed } from '#metro/helpers/getMetroLineStatusEmbed';
+import { sha256hash } from '#utils/string/sha256hash';
+import { getMetroStatusUpdater } from '#metro/helpers/getMetroStatusUpdater';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.SelectMenu
@@ -20,7 +23,7 @@ export class MenuHandler extends InteractionHandler {
 		const channelId = interaction.values[0];
 
 		// Revisa la existencia de un canal de actualizaciones ya establecido
-		const existingUpdateMessage = await this.container.prisma.metroStatusMessage.findUnique({ where: { guildId: interaction.guildId } });
+		const existingUpdateMessage = await getMetroStatusUpdater(interaction.guildId);
 
 		if (existingUpdateMessage) {
 			const confirmRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -37,7 +40,7 @@ export class MenuHandler extends InteractionHandler {
 			interaction.update({
 				embeds: [
 					new WarnEmbed(
-						`¿Sobreescribir <#${existingUpdateMessage.channelId}> como canal de actualizaciones?`,
+						`¿Sobreescribir <#${existingUpdateMessage.channel_id}> como canal de actualizaciones?`,
 						'⚙️ Canal de Actualizaciones (Metro)'
 					)
 				],
@@ -59,14 +62,28 @@ export class MenuHandler extends InteractionHandler {
 			return;
 		}
 
-		const updatesMessage = await updatesChannel.send({ embeds: await getLineStatusEmbeds() });
+		await interaction.deferUpdate();
 
-		// Guardar el canal de actualizaciones en la base de datos
-		await this.container.prisma.metroStatusMessage.create({
-			data: { guildId: interaction.guildId, channelId: channelId, messageId: updatesMessage.id }
-		});
+		/**
+		 * @todo separar el estado de cada linea a su propio mensaje
+		 */
+		const updater = await createMetroStatusUpdater(interaction.guildId, channelId);
+		const networkInfo = await this.container.metro.getNetworkInfo();
 
-		interaction.update({
+		for (const lineInfo of Object.values(networkInfo)) {
+			const statusEmbed = await getMetroLineStatusEmbed(lineInfo);
+			const message = await updatesChannel.send({ embeds: [statusEmbed] });
+			await this.container.prisma.metroStatusMessage.create({
+				data: {
+					metro_status_updater: { connect: { guild_id: updater.guild_id } },
+					message_id: message.id,
+					line_id: lineInfo.id,
+					info_hash: sha256hash(JSON.stringify(lineInfo))
+				}
+			});
+		}
+
+		interaction.editReply({
 			embeds: [new SimpleEmbed(`Se estableció <#${channelId}> como canal de actualizaciones`, '✅ Configuración guardada')],
 			components: []
 		});

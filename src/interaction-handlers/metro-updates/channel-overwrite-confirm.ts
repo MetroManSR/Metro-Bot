@@ -1,6 +1,9 @@
-import { ErrorEmbed } from '#templates/embeds/info/ErrorEmbed';
-import { SimpleEmbed } from '#templates/embeds/info/SimpleEmbed';
-import { getLineStatusEmbeds } from '#utils/metro/getLineStatusEmbeds';
+import { clearMetroStatusMessages } from '#metro/helpers/clearMetroStatusMessages';
+import { getMetroLineStatusEmbed } from '#metro/helpers/getMetroLineStatusEmbed';
+import { getMetroStatusUpdater } from '#metro/helpers/getMetroStatusUpdater';
+import { ErrorEmbed } from '#templates/ErrorEmbed';
+import { SimpleEmbed } from '#templates/SimpleEmbed';
+import { sha256hash } from '#utils/string/sha256hash';
 import { ApplyOptions } from '@sapphire/decorators';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ButtonInteraction } from 'discord.js';
@@ -32,15 +35,32 @@ export class ButtonHandler extends InteractionHandler {
 			return;
 		}
 
-		const updatesMessage = await updatesChannel.send({ embeds: await getLineStatusEmbeds() });
+		/**
+		 * @todo separar el estado de cada linea a su propio mensaje
+		 */
 
-		// Sobreescribir el canal que se encuentra en la base de datos por el nuevo
-		await this.container.prisma.metroStatusMessage.update({
-			where: { guildId: interaction.guildId },
-			data: { channelId: updatesChannel.id, messageId: updatesMessage.id }
-		});
+		await interaction.deferUpdate();
 
-		interaction.update({
+		// Eliminar los mensajes de estado previos
+		await clearMetroStatusMessages(interaction.guildId);
+
+		const updater = await getMetroStatusUpdater(interaction.guildId);
+		const networkInfo = await this.container.metro.getNetworkInfo();
+
+		for (const lineInfo of Object.values(networkInfo)) {
+			const statusEmbed = await getMetroLineStatusEmbed(lineInfo);
+			const message = await updatesChannel.send({ embeds: [statusEmbed] });
+			await this.container.prisma.metroStatusMessage.create({
+				data: {
+					metro_status_updater: { connect: { guild_id: updater!.guild_id } },
+					message_id: message.id,
+					line_id: lineInfo.id,
+					info_hash: sha256hash(JSON.stringify(lineInfo))
+				}
+			});
+		}
+
+		interaction.editReply({
 			embeds: [new SimpleEmbed(`Se estableció <#${channelId}> como canal de actualizaciones`, '✅ Configuración guardada')],
 			components: []
 		});
