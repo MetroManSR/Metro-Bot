@@ -18,24 +18,20 @@ enum LineId {
   l6
 }
 
-model MetroStatusMessage {
-  message_id String @id
-  line_id    LineId
-  info_hash  String
+model GuildConfig {
+  guildId               String  @id @map("guild_id")
+  metroUpdatesChannelId String? @map("metro_updates_channel_id")
 
-  // Relación a metro_status_updaters
-  metro_status_updater    MetroStatusUpdater @relation(fields: [metro_status_updater_guild_id], references: [guild_id])
-  metro_status_updater_guild_id String
-
-  @@map("metro_status_messages")
+  @@map("guild_configs")
 }
 
-model MetroStatusUpdater {
-  guild_id   String @id
-  channel_id String @unique
+model MetroStatusMessage {
+  messageId String @id @map("message_id")
+  guildId   String @map("guild_id")
+  channelId String @map("channel_id")
+  lineId    LineId @map("line_id")
+  overrides Json?
+  infoHash  String @map("info_hash")
 
-  // Relación a metro_status_messages
-  metroStatusMessages MetroStatusMessage[]
-
-  @@map("metro_status_updaters")
+  @@map("metro_status_messages")
 }

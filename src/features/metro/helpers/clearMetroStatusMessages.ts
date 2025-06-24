@@ -5,6 +5,6 @@ import { container } from '@sapphire/framework';
  */
 export async function clearMetroStatusMessages(guildId: string) {
 	return await container.prisma.metroStatusMessage.deleteMany({
-		where: { metro_status_updater_guild_id: guildId }
+		where: { guildId: guildId }
 	});
 }

@@ -1,6 +1,5 @@
 import { clearMetroStatusMessages } from '#metro/helpers/clearMetroStatusMessages';
 import { getMetroLineStatusEmbed } from '#metro/helpers/getMetroLineStatusEmbed';
-import { getMetroStatusUpdater } from '#metro/helpers/getMetroStatusUpdater';
 import { ErrorEmbed } from '#templates/ErrorEmbed';
 import { SimpleEmbed } from '#templates/SimpleEmbed';
 import { sha256hash } from '#utils/string/sha256hash';
@@ -43,8 +42,6 @@ export class ButtonHandler extends InteractionHandler {
 
 		// Eliminar los mensajes de estado previos
 		await clearMetroStatusMessages(interaction.guildId);
-
-		const updater = await getMetroStatusUpdater(interaction.guildId);
 		const networkInfo = await this.container.metro.getNetworkInfo();
 
 		for (const lineInfo of Object.values(networkInfo)) {
@@ -52,10 +49,11 @@ export class ButtonHandler extends InteractionHandler {
 			const message = await updatesChannel.send({ embeds: [statusEmbed] });
 			await this.container.prisma.metroStatusMessage.create({
 				data: {
-					metro_status_updater: { connect: { guild_id: updater!.guild_id } },
-					message_id: message.id,
-					line_id: lineInfo.id,
-					info_hash: sha256hash(JSON.stringify(lineInfo))
+					guildId: interaction.guildId,
+					channelId: updatesChannel.id,
+					messageId: message.id,
+					lineId: lineInfo.id,
+					infoHash: sha256hash(JSON.stringify(lineInfo))
 				}
 			});
 		}

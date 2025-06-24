@@ -4,10 +4,9 @@ import { ErrorEmbed } from '#templates/ErrorEmbed';
 import { SimpleEmbed } from '#templates/SimpleEmbed';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuInteraction } from 'discord.js';
-import { createMetroStatusUpdater } from '#metro/helpers/createMetroStatusUpdater';
 import { getMetroLineStatusEmbed } from '#metro/helpers/getMetroLineStatusEmbed';
 import { sha256hash } from '#utils/string/sha256hash';
-import { getMetroStatusUpdater } from '#metro/helpers/getMetroStatusUpdater';
+import { getMetroStatusUpdatesChannel } from '#metro/helpers/getMetroStatusUpdatesChannel';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.SelectMenu
@@ -23,9 +22,9 @@ export class MenuHandler extends InteractionHandler {
 		const channelId = interaction.values[0];
 
 		// Revisa la existencia de un canal de actualizaciones ya establecido
-		const existingUpdateMessage = await getMetroStatusUpdater(interaction.guildId);
+		const existingUpdatesChannel = await getMetroStatusUpdatesChannel(interaction.guildId);
 
-		if (existingUpdateMessage) {
+		if (existingUpdatesChannel) {
 			const confirmRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder() //
 					.setCustomId(`metro-updates:channel-overwrite-confirm:${channelId}`) // interaction-handlers/metro-updates/channel-overwrite-confirm.ts
@@ -39,10 +38,7 @@ export class MenuHandler extends InteractionHandler {
 
 			interaction.update({
 				embeds: [
-					new WarnEmbed(
-						`¿Sobreescribir <#${existingUpdateMessage.channel_id}> como canal de actualizaciones?`,
-						'⚙️ Canal de Actualizaciones (Metro)'
-					)
+					new WarnEmbed(`¿Sobreescribir <#${existingUpdatesChannel}> como canal de actualizaciones?`, '⚙️ Canal de Actualizaciones (Metro)')
 				],
 				components: [confirmRow]
 			});
@@ -67,7 +63,6 @@ export class MenuHandler extends InteractionHandler {
 		/**
 		 * @todo separar el estado de cada linea a su propio mensaje
 		 */
-		const updater = await createMetroStatusUpdater(interaction.guildId, channelId);
 		const networkInfo = await this.container.metro.getNetworkInfo();
 
 		for (const lineInfo of Object.values(networkInfo)) {
@@ -75,10 +70,11 @@ export class MenuHandler extends InteractionHandler {
 			const message = await updatesChannel.send({ embeds: [statusEmbed] });
 			await this.container.prisma.metroStatusMessage.create({
 				data: {
-					metro_status_updater: { connect: { guild_id: updater.guild_id } },
-					message_id: message.id,
-					line_id: lineInfo.id,
-					info_hash: sha256hash(JSON.stringify(lineInfo))
+					guildId: interaction.guildId,
+					channelId: updatesChannel.id,
+					messageId: message.id,
+					lineId: lineInfo.id,
+					infoHash: sha256hash(JSON.stringify(lineInfo))
 				}
 			});
 		}
