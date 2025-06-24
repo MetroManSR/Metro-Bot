@@ -14,7 +14,7 @@ const client = new SapphireClient({
 		IntentsBitField.Flags.MessageContent
 	],
 	logger: {
-		level: LogLevel.Debug
+		level: LogLevel.Info
 	},
 	loadMessageCommandListeners: true,
 	// Configuración de BullMQ (nescesario para scheduled-tasks)
